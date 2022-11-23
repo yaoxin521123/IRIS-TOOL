@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2016.2 (Build 736U)" ts="2022-11-23 10:02:24">
+<Class name="Util.JournalUtils">
+<Super>%RegisteredObject</Super>
+<TimeChanged>66426,75985.069294</TimeChanged>
+<TimeCreated>66356,45272.872105</TimeCreated>
+
+<Method name="GetImageJournalInfo">
+<Description>
+desc：获取当前日志信息
+d ##class(Util.JournalUtils).GetImageJournalInfo()</Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	// 获取当先日志文件地址
+	s sc = ##class(%SYS.Journal.System).GetImageJournalInfo( .JournalFileName , .JournalFileOffset, .JournalFileCount, .OpenTransFileOffsets,.OpenTransFileCount)
+	b
+	zw sc
+]]></Implementation>
+</Method>
+</Class>
+</Export>

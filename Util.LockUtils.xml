@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2016.2 (Build 736U)" ts="2022-11-23 10:02:33">
+<Class name="Util.LockUtils">
+<Super>%RegisteredObject</Super>
+<TimeChanged>66426,75888.386103</TimeChanged>
+<TimeCreated>66318,32533.891809</TimeCreated>
+
+<Method name="IsLockExist">
+<Description>
+desc：判断锁是否存在
+w ##class(Util.LockUtils).IsLockExist("^yx(1,1)")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>lockname</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	q:($d(^$lock(lockname))) $$$YES
+	q $$$NO
+]]></Implementation>
+</Method>
+
+<Method name="GetLockPid">
+<Description>
+desc：获取锁进程ID
+w ##class(Util.LockUtils).GetLockPid("^yx(1,1)")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>lockname</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[	q ^$lock(lockname, "OWNER")
+]]></Implementation>
+</Method>
+
+<Method name="GetLockType">
+<Description>
+desc：获取锁进程类型
+w ##class(Util.LockUtils).GetLockType("^yx(1,1)")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>lockname</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[	q ^$lock(lockname, "MODE")
+]]></Implementation>
+</Method>
+
+<Method name="GetLockFlag">
+<Description>
+desc：获取锁进程状态
+w ##class(Util.LockUtils).GetLockFlag("^yx(1,1)")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>lockname</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[	q ^$lock(lockname, "FLAGS")
+]]></Implementation>
+</Method>
+
+<Method name="DeleteAllLock">
+<Description>
+desc：删除所有锁，会删除系统固定锁
+d ##class(Util.LockUtils).DeleteLock()</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>namespace</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	s ret = 0
+	do
+	.n $namespace
+	.s $namespace = "%sys"
+	.s ret = ##Class(SYS.Lock).DeleteAllLocks()
+	q ret
+]]></Implementation>
+</Method>
+
+<Method name="DeleteLockByPid">
+<Description>
+desc：删除进程pid相关锁
+w ##class(Util.LockUtils).DeleteLockByPid("13440")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pid</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	s ret = 0
+	
+	do
+	.n $namespace
+	.s $namespace = "%sys"
+	.s ret = ##Class(SYS.Lock).DeleteAllLocks(pid)
+	
+	q ret
+]]></Implementation>
+</Method>
+
+<Method name="DeleteLockByLockname">
+<Description>
+desc：根据lockname删除锁
+w ##class(Util.LockUtils).DeleteLockByLockname("^yx(1,3)")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>lockname</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	s ret = 0
+	s rs = ##class(%ResultSet).%New("%SYS.LockQuery:List")
+	d rs.Execute("")
+	while rs.Next(){
+		if (rs.Data("LockString") = lockname) {
+			do
+			.n $namespace
+			.s $namespace = "%sys"
+			.s ret = ##Class(SYS.Lock).DeleteOneLock(rs.Data("DelKey"), "", 1)
+		}
+	}
+	q ret
+]]></Implementation>
+</Method>
+
+<Method name="QueryLockInfo">
+<Description>
+desc：查询锁相关信息
+d ##class(Util.LockUtils).QueryLockInfo("^yx(1,3)")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>lockname</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	
+	s rs = ##class(%ResultSet).%New("%SYS.LockQuery:List")
+	d rs.Execute("")
+
+	while rs.Next() {
+		w rs.Data("Owner"),!
+		w rs.Data("LockString"),!
+		w rs.Data("DelKey"),!
+		w rs.Data("Mode"),!
+		w rs.Data("Flags"),!
+		w rs.Data("DelKey"),!
+		w rs.Data("Sfn"),!
+		w rs.Data("FullReference"),!
+	}
+]]></Implementation>
+</Method>
+
+<Method name="QueryLock">
+<Description>
+desc：遍历命名空间所有锁
+w ##class(Util.LockUtils).QueryLock("%sys")
+w ##class(Util.LockUtils).QueryLock("user")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>namespace</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	s lockname=""
+	for i = 1 : 1 {
+		s lockname = $o(^$|namespace|lock(lockname))
+		q:lockname=""
+		w lockname,!
+
+	}
+	q ""
+]]></Implementation>
+</Method>
+</Class>
+</Export>

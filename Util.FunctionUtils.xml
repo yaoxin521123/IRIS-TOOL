@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2016.2 (Build 736U)" ts="2022-11-23 10:02:15">
+<Class name="Util.FunctionUtils">
+<Super>%RegisteredObject</Super>
+<TimeChanged>66426,80213.274411</TimeChanged>
+<TimeCreated>65715,34071.392664</TimeCreated>
+
+<Method name="GetHostName">
+<Description>
+desc：获取当前HostName
+w ##class(Util.FunctionUtils).GetHostName()</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	s str = ##class(%Library.Function).HostName()
+	q str
+]]></Implementation>
+</Method>
+
+<Method name="GetHostName1">
+<Description>
+desc：获取当前HostName</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	s x = ##class(%SYS.System).GetNodeName()
+	q x
+]]></Implementation>
+</Method>
+
+<Method name="GetIP">
+<Description>
+desc：获取服务器IP
+w ##class(Util.FunctionUtils).GetIP()</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	s str = ##class(%Library.Function).IPAddresses()
+	q str
+]]></Implementation>
+</Method>
+
+<Method name="GetOutLocalIP">
+<Description>
+desc：获取外网本地IP
+w ##class(Util.FunctionUtils).GetOutLocalIP()</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[	q ##class(%SYSTEM.Process).ClientIPAddress()
+]]></Implementation>
+</Method>
+
+<Method name="GetInLocalIP">
+<Description>
+desc：获取内网本地IP
+w ##class(Util.FunctionUtils).GetInLocalIP()</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[	q $p($zu(54,13,$zu(54,0)),",",1 )
+]]></Implementation>
+</Method>
+
+<Method name="GetNameSpacePath">
+<Description>
+desc：获取当前命名空间物理路径
+w ##class(Util.FunctionUtils).GetNameSpacePath()</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[	q ##class(%Library.File).NormalizeDirectory("")
+]]></Implementation>
+</Method>
+
+<Method name="ShowLicenseInfo">
+<Description>
+desc：获取License信息
+d ##class(Util.FunctionUtils).ShowLicenseInfo()</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[	d ##class(%SYSTEM.License).ShowCounts()
+]]></Implementation>
+</Method>
+
+<Method name="GetMaxAvailableLicense">
+<Description>
+desc：获取可用最大的许可证数量
+w ##class(Util.FunctionUtils).GetMaxAvailableLicense()</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[	q $SYSTEM.License.LUMinAvailable()
+]]></Implementation>
+</Method>
+
+<Method name="IsChineseLocale">
+<Description>
+desc：判断环境是否是中文
+w ##class(Util.FunctionUtils).IsChineseLocale()</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	s nls = ##class(%SYS.NLS.Locale).%New()
+	q:(nls.Language [ "Chinese") $$$OK
+	q $$$NO
+]]></Implementation>
+</Method>
+</Class>
+</Export>

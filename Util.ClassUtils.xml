@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2016.2 (Build 736U)" ts="2022-11-23 10:01:28">
+<Class name="Util.ClassUtils">
+<Super>%RegisteredObject</Super>
+<TimeChanged>66435,63470.752818</TimeChanged>
+<TimeCreated>66426,75310.479147</TimeCreated>
+
+<Method name="GetParamsNum">
+<Description>
+desc：获取方法的参数数量
+w ##class(Util.ClassUtils).GetParamsNum("Util.ClassUtils","GetParamsNum")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>className:%String,methodName:%String</FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+	s methodParams = $g(^oddCOM(className, "m", methodName, 60))
+	s paramsNum = $ll(methodParams)
+	q paramsNum
+]]></Implementation>
+</Method>
+
+<Method name="GetNowParamsNum">
+<Description>
+desc：获取方法的参数数量
+w ##class(Util.ClassUtils).GetNowParamsNum("Util.ClassUtils","GetParamsNum","2","3")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>arg...</FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+	w arg,!
+	q $zutil(141)
+]]></Implementation>
+</Method>
+
+<Method name="IsHasMethod">
+<Description>
+desc：判断方法是否存在
+w ##class(Util.ClassUtils).IsHasMethod("Util.ClassUtils","IsHasMethod")
+w ##class(Util.ClassUtils).IsHasMethod("Util.ClassUtils","IsHasMethod1")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>className:%String,methodName:%String</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	q:($d(^oddCOM(className, "m", methodName))) $$$YES
+	q $$$NO
+]]></Implementation>
+</Method>
+
+<Method name="IsHasMethod1">
+<Description>
+desc：判断方法是否存在
+w ##class(Util.ClassUtils).IsHasMethod("Util.ClassUtils","IsHasMethod1")
+w ##class(Util.ClassUtils).IsHasMethod("Util.ClassUtils","IsHasMethod11")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>className:%String,methodName:%String</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	q:(##class(%Dictionary.MethodDefinition).%ExistsId(className _ "||" _ methodName)) $$$YES
+	q $$$NO
+]]></Implementation>
+</Method>
+
+<Method name="IsPropExist">
+<Description>
+desc：判断类方法属性是否存在
+w ##class(Util.ClassUtils).IsPropExist("Util.ClassUtils","Name")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>className:%String,prop:%String</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	q:($d(^oddCOM(className, "a", prop))) $$$YES
+	q $$$NO
+]]></Implementation>
+</Method>
+
+<Property name="Name">
+</Property>
+
+<Method name="IsPropExist1">
+<Description>
+desc：判断类方法属性是否存在
+w ##class(Util.ClassUtils).IsPropExist1("Util.ClassUtils","Name1")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>className:%String,prop:%String</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	q:(##class(%Dictionary.PropertyDefinition).%ExistsId(className _ "||" _ prop)) $$$YES
+	q $$$NO
+]]></Implementation>
+</Method>
+
+<Method name="IsExistsCls">
+<Description>
+desc：判断类是否存在
+w ##class(Util.ClassUtils).IsExistsCls("Util.ClassUtils")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>cls:%String</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+    if '##class(%Dictionary.CompiledClass).%ExistsId(cls) {
+        q $$$NO
+    }
+    q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="IsExtendCls">
+<Description>
+desc：判断类是否继承了某个类
+w ##class(Util.ClassUtils).IsExtendCls("PHA.HERB.MOB.BIZ","PHA.HERB.MOB.Base")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>cls:%String,parentCls:%String</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+    Set check = $classmethod(cls, "%Extends", parentCls)
+    If 'check {
+        q $$$NO
+    }
+    q $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="GetTableNameByClassName">
+<Description>
+desc：根据类名获取表名 - todo 未更新博客
+w ##class(Util.ClassUtils).GetTableNameByClassName("User.DHCPHARWIN")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>className</FormalSpec>
+<Implementation><![CDATA[
+	&sql(SELECT SqlQualifiedNameQ into :tableName FROM   %Dictionary.CompiledClass WHERE ID = :className)
+	q tableName
+]]></Implementation>
+</Method>
+
+<Method name="TestUse">
+<Description>
+desc：根据类名获取表名 - todo 未更新博客
+d ##class(Util.ClassUtils).TestUse("User.DHCPHARWIN")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>className</FormalSpec>
+<Implementation><![CDATA[
+	 SET seqfilename="E:\temp\autocommit.sh"
+	 OPEN seqfilename:("R"):10
+	 USE seqfilename
+
+	 q $$$OK
+]]></Implementation>
+</Method>
+</Class>
+</Export>

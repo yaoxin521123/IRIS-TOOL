@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2016.2 (Build 736U)" ts="2022-11-23 10:02:07">
+<Class name="Util.FileUtils">
+<Super>%RegisteredObject</Super>
+<TimeChanged>65993,33314.699095</TimeChanged>
+<TimeCreated>65728,36152.313124</TimeCreated>
+
+<Method name="File2Stream">
+<Description>
+Description: 文件读取到流中, 如果要使用文件的数据则遍历读取流
+Creator:	 Huxt 2020-09-14
+Others:		 (1) 被读取的文件需要放在服务器上
+			 (2) 一般为txt文件,其他格式的可能读不出来
+			 (3) 参数filePath中指定的文件及文件夹都需要存在,否则无法读取
+			 (4) 文件需要处理关闭状态
+			 (5) 如何使用文件中的数据? 如下:
+			 标准的excel读取不了，有附加信息
+				s fileStream = ##class(PHA.COM.Util).File2Stream("d:/temp/test.xls")
+				while 'fileStream.AtEnd { s oneRow = fileStream.ReadLine() w oneRow,!}
+Debug:
+w ##class(Util.FileUtils).File2Stream("d:/temp/test.xls").ReadLine()</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>filePath</FormalSpec>
+<ReturnType>%Stream.FileCharacter</ReturnType>
+<Implementation><![CDATA[
+	s fileDir = ..GetFileDir(filePath)
+	q:##class(%File).DirectoryExists(fileDir)=0 -100_"^文件夹:"_fileDir_" 在服务器上不存在"
+	s fileStream = ##class(%Stream.FileCharacter).%New()
+	s sc = fileStream.LinkToFile(filePath)
+	q fileStream
+]]></Implementation>
+</Method>
+
+<Method name="GetFileDir">
+<Description>
+Description: 获取的文件夹
+Creator:	 Huxt 2020-09-14
+w ##class(Util.FileUtils).GetFileDir("d:\temp\test.txt")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>filePath</FormalSpec>
+<Implementation><![CDATA[
+	s retDir = ""
+	s filePath = $replace(filePath, "\", "/")
+	q $p(filePath, "/", 1, $l(filePath, "/") - 1)
+]]></Implementation>
+</Method>
+
+<Method name="FileExcelDemo">
+<Description>
+w ##class(Util.FileUtils).FileExcelDemo()</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>filePath</FormalSpec>
+<Implementation><![CDATA[
+	s fileStream = ##class(Util.FileUtils).File2Stream("d:/aa.txt")
+	while 'fileStream.AtEnd {
+		s oneRow = fileStream.ReadLine()
+		w oneRow,!
+		b
+		
+	}
+	q
+]]></Implementation>
+</Method>
+
+<Method name="GetSystemManagerPath">
+<Description>
+desc:获取System Manager目录 mgr 目录
+w ##class(Util.FileUtils).GetSystemManagerPath()</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[	q ##class(%File).ManagerDirectory()
+]]></Implementation>
+</Method>
+
+<Method name="GetCurrentNameSpacePath">
+<Description>
+desc: 获取当前命名空间数据库所在目录
+w ##class(Util.FileUtils).GetCurrentNameSpacePath()</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[	q ##class(%SYSTEM.Process).CurrentDirectory()
+]]></Implementation>
+</Method>
+</Class>
+</Export>

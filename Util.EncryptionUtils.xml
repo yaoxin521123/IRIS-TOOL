@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2016.2 (Build 736U)" ts="2022-11-23 10:01:59">
+<Class name="Util.EncryptionUtils">
+<ProcedureBlock>1</ProcedureBlock>
+<Super>%RegisteredObject</Super>
+<TimeChanged>66426,81178.497231</TimeChanged>
+<TimeCreated>65699,37637.293381</TimeCreated>
+
+<Method name="HexMd5Encryption">
+<Description>
+info:	yx 
+desc：	HexMd5加密，此方法使用MD5消息摘要算法生成16字节的哈希。 
+input: 	str - 要哈希的字符串。capital - U 大写 L 小写（默认大写）。
+output：包含哈希值的字符串，每个字符一个字节。
+w ##class(Util.EncryptionUtils).HexMd5Encryption("111111")
+32位 大写：37F9D590E9CAB34008A07CFBF58F9A61
+32位 小写：37f9d590e9cab34008a07cfbf58f9a61</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str:%String,capital:%String="U"</FormalSpec>
+<Implementation><![CDATA[
+	/* 字符串有汉字需要转换UTF-8 */
+	s ret = $zcvt(str, "O", "UTF8")
+	s ret = ##class(%SYSTEM.Encryption).MD5Hash(ret)
+	s ret = ..Byte2Hex(ret)
+	s ret = $zconvert(ret, capital)
+	q ret
+]]></Implementation>
+</Method>
+
+<Method name="Base64Md5Encryption">
+<Description>
+desc：Base64Md5加密
+w ##class(Util.EncryptionUtils).Base64Md5Encryption("111111")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str:%String,capital:%String="U"</FormalSpec>
+<Implementation><![CDATA[
+	/* 字符串有汉字需要转换UTF-8 */
+	s ret = $zcvt(str, "O", "UTF8")
+	s ret = ##class(%SYSTEM.Encryption).MD5Hash(ret)
+	s ret = ##class(%SYSTEM.Encryption).Base64Encode(ret)
+	s ret = $zconvert(ret, capital)
+	q ret
+]]></Implementation>
+</Method>
+
+<Method name="StrMd5Encryption">
+<Description>
+desc：原生Md5加密
+w ##class(Util.EncryptionUtils).StrMd5Encryption("111111")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str:%String,capital:%String="U"</FormalSpec>
+<Implementation><![CDATA[
+	/* 字符串有汉字需要转换UTF-8 */
+	s ret = $zcvt(str, "O", "UTF8")
+	s ret = ##class(%SYSTEM.Encryption).MD5Hash(ret)
+	s ret = $zconvert(ret, capital)
+	q ret
+]]></Implementation>
+</Method>
+
+<Method name="HexHmacMd5Encryption">
+<Description>
+desc：HexHmacMd5加密
+w ##class(Util.EncryptionUtils).HexHmacMd5Encryption("111111",,"lele")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str:%String,capital:%String="U",key</FormalSpec>
+<Implementation><![CDATA[
+	/* 字符串有汉字需要转换UTF-8 */
+	s ret = $zcvt(str, "O", "UTF8")
+	s ret = ##class(%SYSTEM.Encryption).HMACMD5(ret,key)
+	s ret = ..Byte2Hex(ret)
+	s ret = $zconvert(ret, capital)
+	q ret
+]]></Implementation>
+</Method>
+
+<Method name="Base64HmacMd5Encryption">
+<Description>
+desc：Base64HmacMd5加密
+w ##class(Util.EncryptionUtils).Base64HmacMd5Encryption("111111",,"lele")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str:%String,capital:%String="U",key</FormalSpec>
+<Implementation><![CDATA[
+	/* 字符串有汉字需要转换UTF-8 */
+	s ret = $zcvt(str, "O", "UTF8")
+	s ret = ##class(%SYSTEM.Encryption).HMACMD5(ret,key)
+	s ret = ##class(%SYSTEM.Encryption).Base64Encode(ret)
+	s ret = $zconvert(ret, capital)
+	q ret
+]]></Implementation>
+</Method>
+
+<Method name="StrHmacMd5Encryption">
+<Description>
+desc：原生HmacMd5加密
+w ##class(Util.EncryptionUtils).StrHmacMd5Encryption("111111",,"lele")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str:%String,capital:%String="U",key</FormalSpec>
+<Implementation><![CDATA[
+	/* 字符串有汉字需要转换UTF-8 */
+	s ret = $zcvt(str, "O", "UTF8")
+	s ret = ##class(%SYSTEM.Encryption).HMACMD5(ret, key)
+	s ret = $zconvert(ret, capital)
+	q ret
+]]></Implementation>
+</Method>
+
+<Method name="Byte2Hex">
+<Description>
+desc: 将字节转成16进制字符
+w ##class(Util.EncryptionUtils).Byte2Hex("姚鑫")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str</FormalSpec>
+<Implementation><![CDATA[
+	set ret = ""
+	for i = 1 : 1 : $length(str) {
+		set ascii = $ascii($extract(str, i)) 
+		if (ascii < 16) {
+			/* 16进制转10进制需要补0 */
+			set ret = ret _ "0" _ $zhex(ascii)
+		} else {
+			set ret = ret _ $zhex(ascii)
+		}
+	}
+	q ret
+]]></Implementation>
+</Method>
+
+<Method name="Base64Encryption">
+<Description>
+w ##class(Util.EncryptionUtils).Base64Encryption("{""userCode"":""demo"",""userName"":""Demo Group""}")
+{"userCode":"demo","userName":"Demo Group","userID":1,"rows":[{"locID":"316","locDesc":"中药房[分院]","groupID":"1","groupDesc":"Demo Group"},{"locID":"310","locDesc":"中药房","groupID":"1","groupDesc":"DemoGroup"},{"locID":"309","locDesc":"急诊药房","groupID":"1","groupDesc":"Demo Group"},{"locID":"311","locDesc":"住院药房","groupID":"34","groupDesc":"门诊药房组长"}]}</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str:%String,capital:%String="U"</FormalSpec>
+<Implementation><![CDATA[
+	/* 字符串有汉字需要转换UTF-8 */
+	s ret = $zcvt(str, "O", "UTF8")
+	s ret = ##class(%SYSTEM.Encryption).Base64Encode(ret)
+	q ret
+]]></Implementation>
+</Method>
+
+<Method name="AESCBCBase64Encode">
+<Description>
+w ##class(Util.EncryptionUtils).Base64AESEncode("{'userCode':'demo','userName':'Demo Group'}")
+w ##class(Util.EncryptionUtils).Base64AESEncode("姚鑫")
+w ##class(Util.EncryptionUtils).AESCBCBase64Encode("_system")
+w ##class(Util.EncryptionUtils).AESCBCBase64Encode("dhdev")
+w ##class(Util.EncryptionUtils).AESCBCBase64Encode("姚鑫","J#y9sJesv*5Habcd","J#y9sJesv*5Habcd")
+能是算法中，自己产生了随机的初始化向量IV，普通的IV处理如果不设置就是null
+其中AESCBC算法中key 长度必须为16、24或32个字符  IV 长度必须是 16个字符</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str:%String,key="",IV=""</FormalSpec>
+<Implementation><![CDATA[
+	
+	s str = $zcvt(str, "O", "UTF8")
+	//s key = "J#y9sJesv*5HmqLq" 
+	
+	//s IV = "J#y9sJesv*5HmqLq" 
+	
+	s ret = ##class(%SYSTEM.Encryption).AESCBCEncrypt(str, key, IV)
+	
+	s ret = ##class(%SYSTEM.Encryption).Base64Encode(ret)
+
+	q ret
+]]></Implementation>
+</Method>
+
+<Method name="Base64AESDecode">
+<Description>
+W+b/a/mbsb+UuN6rLZq8ZwQ/QeV1LRR4E9t/J/o/jAdIG5ZhLVLUAWt4Qw/jbDvI
+w ##class(Util.EncryptionUtils).Base64AESDecode("DPKaGRjBJAmeElSjZYtsCg==","J#y9sJesv*5HmqLq","J#y9sJesv*5HmqLq")
+w ##class(Util.EncryptionUtils).Base64AESDecode("JyQZY6LY8dsti+sGxKKX6Q==","J#y9sJesv*5HmqLq","J#y9sJesv*5HmqLq")
+w ##class(Util.EncryptionUtils).Base64AESDecode("4qTRFa1Ph9VNz4Nbh6pLOA==","J#y9sJesv*5Habcd","J#y9sJesv*5Habcd")
+w ##class(Util.EncryptionUtils).Base64AESDecode("iZdTjrd+sAjIf3OW4N8Sbyxalu9l+Q2CnnyYgh7GupV1uthQ+e/opNSfu4fELO4L","J#y9sJesv*5HmqLq","J#y9sJesv*5HmqLq")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str:%String,key:%String,IV:%String</FormalSpec>
+<Implementation><![CDATA[
+	s ret = ##class(%SYSTEM.Encryption).Base64Decode(str)
+	
+	s ret = ##class(%SYSTEM.Encryption).AESCBCDecrypt(ret, key, IV)
+	
+	s ret = $zcvt(ret, "I", "UTF8")		/* 解决中文乱码问题 */
+	
+	q ret
+]]></Implementation>
+</Method>
+
+<Method name="AESECBBase64Encode">
+<Description>
+IV传空为 ECB模式
+w ##class(Util.EncryptionUtils).AESECBBase64Encode("姚鑫")
+w ##class(Util.EncryptionUtils).AESECBBase64Encode("yx")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str:%String</FormalSpec>
+<Implementation><![CDATA[
+	
+	s str = $zcvt(str, "O", "UTF8")
+
+	s key = $zcvt("1234567812345678", "O", "UTF8")
+	
+	s IV = $zcvt("1234567812345678", "O", "UTF8")
+	
+	s key = "J#y9sJesv*5HmqLq" 
+	
+	s IV = "" 
+	
+	s ret = ##class(%SYSTEM.Encryption).AESCBCEncrypt(str, key, IV)
+	
+	s ret = ##class(%SYSTEM.Encryption).Base64Encode(ret)
+
+	q ret
+]]></Implementation>
+</Method>
+
+<Method name="SHAEncryption">
+<Description>
+info:	yx 
+desc：	此方法使用SHA哈希。 
+input: 	str - 要哈希的字符串。bitlength -所需哈希的比特长度。 合法值为:160 (SHA-1) 224 (SHA-224) 256 (SHA-256) 384 (SHA-384) 512 (SHA-512) 
+output：包含散列值的字符串。
+w ##class(Util.EncryptionUtils).SHAEncryption("姚鑫")
+w ##class(Util.EncryptionUtils).SHAEncryption("456")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str:%String,bitlength:%String="256",capital:%String="U"</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	s ret = $zcvt(str, "O", "UTF8")
+	s ret = ##class(%SYSTEM.Encryption).SHAHash(bitlength, str)
+	s ret = ..Byte2Hex(ret)
+	s ret = $zconvert(ret, capital)
+	q ret
+]]></Implementation>
+</Method>
+
+<Method name="HMACSHA1Base64Encode">
+<Description><![CDATA[
+author: yx
+desc：先HMACSHA1加密在转换16字节在base64加密
+w ##class(Util.EncryptionUtils).HMACSHA1Base64Encode("11&20220105155752&ceshi","33")]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str:%String,key:%String,capital:%String="U"</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	s str = $zcvt(str, "O", "UTF8")
+	s key = $zcvt(key, "O", "UTF8")	
+	
+	s ret = ##class(%SYSTEM.Encryption).HMACSHA1(str, key)
+	s ret = ..Byte2Hex(ret)
+	s ret = $zcvt(ret, capital)
+	s ret = ##class(%SYSTEM.Encryption).Base64Encode(ret)
+
+	q ret
+]]></Implementation>
+</Method>
+
+<Method name="HMACSHA1Base64Decode">
+<Description>
+w ##class(Util.EncryptionUtils).HMACSHA1Base64Encode("姚鑫","abcdefghij1234567890")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str:%String,key:%String</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	s ret = ##class(%SYSTEM.Encryption).Base64Decode(str)
+	
+	s ret = ##class(%SYSTEM.Encryption).AESCBCDecrypt(ret, key)
+
+	s ret = $zcvt(ret, "I", "UTF8")		/* 解决中文乱码问题 */
+	
+	q ret
+]]></Implementation>
+</Method>
+</Class>
+</Export>

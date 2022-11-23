@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2016.2 (Build 736U)" ts="2022-11-23 10:03:19">
+<Class name="Util.SqlUtls">
+<Super>%RegisteredObject</Super>
+<TimeChanged>66426,75229.869146</TimeChanged>
+<TimeCreated>65816,61755.059515</TimeCreated>
+
+<Method name="IsIntrans">
+<Description>
+判断当前是否在事务当中。
+w ##class(Util.SqlUtls).IsIntrans()</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	n SQLCODE
+	&sql(%INTRANSACTION)
+	q:'SQLCODE $$$YES
+	q $$$NO
+]]></Implementation>
+</Method>
+
+<Method name="GetMaxID">
+<Description>
+获取最大ID
+w ##class(Util.SqlUtls).GetMaxID()</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>table</FormalSpec>
+<Implementation><![CDATA[
+	&sql(SELECT MAX(%ID) INTO :maxID FROM Sample.Person )
+	q maxID
+]]></Implementation>
+</Method>
+
+<Method name="ValidateIndices">
+<Description>
+修正索引
+w ##class(Util.SqlUtls).ValidateIndices()</Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	s sc = ##class(Sample.Person).%ValidateIndices("",1,2,1)
+	if sc=1 {
+		w !,"成功索引验证/更正" 
+	} else {
+		w !,"索引验证/更正失败",!
+		d $System.Status.DisplayError(sc) 
+	}
+	q ""
+]]></Implementation>
+</Method>
+
+<Method name="QuerySqlTableStatements">
+<Description>
+查询表结构存在的sql语句所在的类
+w ##class(Util.SqlUtls).QuerySqlTableStatements("SQLUser","DHC_PHARWIN")
+w ##class(Util.SqlUtls).QuerySqlTableStatements("Sample","Person")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>schema,table</FormalSpec>
+<Implementation><![CDATA[
+	s call = "CALL %Library.SQLTableStatements('"_ schema _ "','"_ table _ "')"
+	s tStatement = ##class(%SQL.Statement).%New()
+	s sc = tStatement.%Prepare(call)
+	if sc '= 1 {
+		w "%Prepare 失败" 
+		d $System.Status.DisplayError(sc) q
+	}
+	s rset = tStatement.%Execute()
+	if rset.%SQLCODE '= 0 {
+		w "SQL 错误",rset.%SQLCODE q
+	}
+	d rset.%Display()
+	q ""
+]]></Implementation>
+</Method>
+
+<Method name="GetOldRow">
+<Description>
+获取最大ID
+w ##class(Util.SqlUtls).GetOldRow("Sample.Person")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>table</FormalSpec>
+<Implementation><![CDATA[
+	s sql = "SELECT  * FROM "_ table _"  where {fn MOD(%ID,2)}=1"
+	s mStatement = ##class(%SQL.Statement).%New()
+	s status = mStatement.%Prepare(.sql)
+	s rs = mStatement.%Execute()
+	
+	while rs.%Next() {
+		b
+		w rs.Data(1),!
+		b
+	}
+	
+	q 0
+]]></Implementation>
+</Method>
+
+<Method name="IsTableExists">
+<Description>
+desc：判断表在当前命名空间是否存在 iris可用
+w ##class(Util.SqlUtls).IsTableExists()</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>table</FormalSpec>
+<Implementation><![CDATA[	q ##class(%SYSTEM.SQL.Schema).TableExists(table)
+]]></Implementation>
+</Method>
+
+<Method name="IsValidTableName">
+<Description>
+desc：验证表明是否合法
+w ##class(Util.SqlUtls).IsValidTableName("#asdasasdas")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>tablename</FormalSpec>
+<Implementation><![CDATA[
+	s x = $SYSTEM.SQL.IsValidRegularIdentifier(tablename)
+	if x = 0 {
+		if $length(tablename) > 200 {
+			q "表名太长" 
+		} elseif $SYSTEM.SQL.IsReservedWord(tablename) {
+			q "表名是保留字" 
+		} else {
+			s nls = ##class(%SYS.NLS.Locale).%New()
+			if nls.Language [ "Japanese" {
+				q "日语区域设置不能使用重音字母"
+			}
+			q "表名包含无效字符"
+		}
+	} else { 
+		q tablename _" 是有效的表名称"
+	}
+]]></Implementation>
+</Method>
+
+<Method name="GetFieldMaxVal">
+<Description>
+desc：确定字段最大值
+w ##class(Util.SqlUtls).GetFieldMaxVal(6,2)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>integer,decimal</FormalSpec>
+<Implementation><![CDATA[ 	q $$maxval^%apiSQL(integer, decimal)
+]]></Implementation>
+</Method>
+
+<Method name="GetFieldMinVal">
+<Description>
+desc：确定字段最小值
+w ##class(Util.SqlUtls).GetFieldMinVal(6,2)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>integer,decimal</FormalSpec>
+<Implementation><![CDATA[	q $$minval^%apiSQL(integer, decimal)
+]]></Implementation>
+</Method>
+
+<Method name="QueryToTable">
+<Description>
+desc：把query变成表
+d ##class(Util.SqlUtls).QueryToTable("SELECT TOP 5 * FROM Sample.Person","newTable")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>query,tablename</FormalSpec>
+<Implementation><![CDATA[ 	d $SYSTEM.SQL.QueryToTable(query, tablename ,0)
+]]></Implementation>
+</Method>
+
+<Method name="CreateUUID">
+<Description>
+desc：创建UUID
+d ##class(Util.SqlUtls).CreateUUID()</Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[ 	q $System.Util.CreateGUID()
+]]></Implementation>
+</Method>
+
+<Method name="GetTableName">
+<Description>
+desc：根据类名获取sql表名
+w ##class(Util.SqlUtls).GetTableName("User.DHCPHARWIN")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>className:%String</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[	q ##class(%Dictionary.ClassDefinition).%OpenId(className).SqlTableName
+]]></Implementation>
+</Method>
+
+<Method name="GetTableName1">
+<Description>
+desc：根据类名获取sql表名
+w ##class(Util.SqlUtls).GetTableName1("User.DHCPHARWIN")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>className:%String</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	s tableName = ""
+	&sql(SELECT TABLE_NAME into :tableName FROM INFORMATION_SCHEMA.Tables WHERE TABLE_SCHEMA='SQLUser' AND CLASSNAME = :className)
+	q tableName
+]]></Implementation>
+</Method>
+</Class>
+</Export>

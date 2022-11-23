@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2016.2 (Build 736U)" ts="2022-11-23 10:01:18">
+<Class name="Util.BitUtil">
+<Super>%RegisteredObject</Super>
+<TimeChanged>66426,79939.518042</TimeChanged>
+<TimeCreated>66284,33087.395127</TimeCreated>
+
+<Method name="LogicalToDisplay">
+<Description>
+desc：将字符转为为字符串形式的位串
+w ##class(Util.BitUtil).LogicalToDisplay(1)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>bitint:%Integer</FormalSpec>
+<Implementation><![CDATA[
+	s str = ""
+	for i = 0 : 1 { 
+		q:((2 ** i) > bitint)
+		if $zboolean(bitint, 2**i, 1) {
+			s str = str _ 1
+		} else {
+			s str = str _ 0
+		}
+	}
+	q str
+]]></Implementation>
+</Method>
+
+<Method name="FindSetBits">
+<Description>
+desc：将数字转为位2的幂次
+w ##class(Util.BitUtil).FindSetBits(2)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>bitint:%Integer</FormalSpec>
+<Implementation><![CDATA[
+	s bits = "" 
+	while (bitint '= 0) { 
+		s bit = $zlog(bitint) \ $zlog(2)
+		s bits = bit _ " " _ bits
+		s bitint = bitint - (2 ** bit) 
+	} 
+	q bits
+]]></Implementation>
+</Method>
+
+<Method name="bit2Decimal">
+<Description>
+desc：将位串转为十进制
+w ##class(Util.BitUtil).bit2Decimal($factor(10))</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>bit</FormalSpec>
+<Implementation><![CDATA[
+	s decimal = 0
+	for i = 1 : 1 : $bitcount(bit) {
+		s num = $bit(bit, i)
+		if (num = 1 ){
+			s decimal = decimal + $zpower(2, i - 1)
+		}
+	}
+  	q decimal
+]]></Implementation>
+</Method>
+
+<Method name="GetBit">
+<Description>
+desc：获取数字对应位串
+w ##class(Util.BitUtil).GetBit(10)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ascii</FormalSpec>
+<Implementation><![CDATA[	q $factor(ascii)
+]]></Implementation>
+</Method>
+
+<Method name="String2Bit">
+<Description>
+desc：获取字符串对应的二进制位串
+zw ##class(Util.BitUtil).String2Bit("姚")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str</FormalSpec>
+<Implementation><![CDATA[	q $factor($ascii(str))
+]]></Implementation>
+</Method>
+
+<Method name="Offset">
+<Description>
+desc：位串移位
+w ##class(Util.BitUtil).Offset($factor(16),1)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>char,offset</FormalSpec>
+<Implementation><![CDATA[
+	s bit = $factor(0)
+	for i = 64 : -1 : 1{
+  		s pos = i - offset
+  		if pos > 0 {
+      		s $bit(bit, pos) = $bit(char, i)
+      	}
+  	}
+  	q bit
+]]></Implementation>
+</Method>
+
+<Method name="Offset2Num">
+<Description>
+desc：位串移位后转数字
+w ##class(Util.BitUtil).Offset2Num($factor(16),1)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>char,offset</FormalSpec>
+<Implementation><![CDATA[
+	s bit = ..Offset(char, offset)
+	q ..bit2Decimal(bit)
+]]></Implementation>
+</Method>
+</Class>
+</Export>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2016.2 (Build 736U)" ts="2022-11-23 10:03:10">
+<Class name="Util.ProcessUtils">
+<Super>%RegisteredObject</Super>
+<TimeChanged>66426,74782.472447</TimeChanged>
+<TimeCreated>65735,41443.311965</TimeCreated>
+
+<Method name="StopBreak">
+<Description>
+desc：停止当前进程所有break断点</Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[	d ##class(%SYSTEM.Process).BreakMode(0)
+]]></Implementation>
+</Method>
+
+<Method name="StartBreak">
+<Description>
+info:	yx 
+desc：开启当前进程所有break断点</Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[	d ##class(%SYSTEM.Process).BreakMode(1)
+]]></Implementation>
+</Method>
+
+<Method name="GetAllNameSpace">
+<Description>
+desc：列出当前进程可用的所有命名空间(显式和隐式)：
+d ##class(Util.ProcessUtils).GetAllNameSpace()</Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	d ##class(%SYS.Namespace).ListAll(.result)
+	zw result
+]]></Implementation>
+</Method>
+</Class>
+</Export>

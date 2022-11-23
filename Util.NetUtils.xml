@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2016.2 (Build 736U)" ts="2022-11-23 10:02:53">
+<Class name="Util.NetUtils">
+<Super>%RegisteredObject</Super>
+<TimeChanged>66426,75009.166711</TimeChanged>
+<TimeCreated>65880,81207.415425</TimeCreated>
+
+<Method name="UrlParser">
+<Description>
+desc：格式化Url
+d ##class(Util.NetUtils).UrlParser()</Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	s url = "https://www.google.com/search?q=Java+site%3Adocs.intersystems.com&oq=Java+site%3Adocs.intersystems.com"
+	d ##class(%Net.URLParser).Parse(url,.components)
+	zw components
+]]></Implementation>
+</Method>
+</Class>
+</Export>

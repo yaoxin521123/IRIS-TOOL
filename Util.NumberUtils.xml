@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2016.2 (Build 736U)" ts="2022-11-23 10:03:02">
+<Class name="Util.NumberUtils">
+<Super>%RegisteredObject</Super>
+<TimeChanged>66426,71864.77223</TimeChanged>
+<TimeCreated>65702,71556.663017</TimeCreated>
+
+<Method name="UpInteger">
+<Description>
+desc：向上取整
+w ##class(Util.NumberUtils).UpInteger(0.3)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>number:%Integer</FormalSpec>
+<Implementation><![CDATA[	q ##class(%SYSTEM.SQL).CEILING(number)
+]]></Implementation>
+</Method>
+
+<Method name="DownInteger">
+<Description>
+desc：向下取整
+w ##class(Util.NumberUtils).DownInteger(32.3)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>number:%Integer</FormalSpec>
+<Implementation><![CDATA[	q $normalize(number, -1)
+]]></Implementation>
+</Method>
+
+<Method name="DownInteger1">
+<Description>
+desc：向下取整2
+w ##class(Util.NumberUtils).DownInteger1(32.3)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>number:%Integer</FormalSpec>
+<Implementation><![CDATA[	q $system.SQL.FLOOR(number)
+]]></Implementation>
+</Method>
+
+<Method name="GetNumLen">
+<Description>
+desc：获取数字长度，不含 - .
+w ##class(Util.NumberUtils).GetNumLen(32.3)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>number:%Integer</FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+	if ('$isvalidnum(number)){
+		throw ##class(%Exception.General).%New("不是数字")
+	}
+	q $l($zstrip(+number,"*E'N"))
+]]></Implementation>
+</Method>
+
+<Method name="IsInteger">
+<Description>
+desc：判断是否是整数
+w ##class(Util.NumberUtils).IsInteger(32.3)
+w ##class(Util.NumberUtils).IsInteger(-32.3)
+w ##class(Util.NumberUtils).IsInteger(-32.0)
+w ##class(Util.NumberUtils).IsInteger(33.0)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str:%String</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	q:'$isvalidnum(str) $$$NO
+	q:(+str [ ".") $$$NO
+	q $$$YES
+]]></Implementation>
+</Method>
+
+<Method name="IsInteger1">
+<Description>
+desc：判断是否是整数
+w ##class(Util.NumberUtils).IsInteger1(32.3)
+w ##class(Util.NumberUtils).IsInteger1(-32.3)
+w ##class(Util.NumberUtils).IsInteger1(-32.0)
+w ##class(Util.NumberUtils).IsInteger1(33.0)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str:%String</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	q:($number(str, "I") = "") $$$NO
+	q $$$YES
+]]></Implementation>
+</Method>
+
+<Method name="GetMaxNumber">
+<Description>
+desc：字符串取最大值
+w ##class(Util.NumberUtils).GetMaxNumber("1,2,3.1,5500.56,6.9,100,100.1")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str:%String</FormalSpec>
+<ReturnType>%Decimal</ReturnType>
+<Implementation><![CDATA[
+	s len = $l(str, ",")
+	for i = 1 : 1 : len {
+		s array($p(str, ",", i)) = ""
+	}
+	q $o(array(""), -1)
+]]></Implementation>
+</Method>
+
+<Method name="GetSuffixNumber">
+<Description>
+desc：取第一段连续数字
+w ##class(Util.NumberUtils).GetSuffixNumber("abcdef12a1")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str:%String</FormalSpec>
+<ReturnType>%Decimal</ReturnType>
+<Implementation><![CDATA[
+	s firstNum = $locate(str, "\d")
+	s str = $e(str, firstNum, *)
+	s secondNum = $locate(str, "\d*" ,1, end)
+	s str = $e(str, 1, end - 1)
+	q str
+]]></Implementation>
+</Method>
+
+<Method name="IsSame">
+<Description>
+desc：对比是否相同
+w ##class(Util.NumberUtils).IsSame("1^2^3", "3^2^1^0")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>str:%String,target:%String</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	s list1 = $lfs(str, "^")
+	s list2 =  $lfs(target, "^")
+	q:$ls(list1, list2) $$$YES
+	s len1 = $ll(list1)
+	s len2 = $ll(list2)
+	q:(len1 '= len2) $$$NO
+	
+	for i = 1 : 1 : $ll(list1) {
+		if ('$lf(list2, $li(list1, i))) {
+			ret $$$NO
+		}
+	}
+	q $$$YES
+]]></Implementation>
+</Method>
+
+<Method name="GetComDiv">
+<Description>
+w ##class(Util.NumberUtils).GetComDiv(1, 8)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>num1,num2</FormalSpec>
+<Implementation><![CDATA[
+    s big = $s(num1 > num2 : num1 , 1 : num2)
+    s sm = $s(num1 < num2 : num1 , 1 : num2)
+    s rem = big # sm
+    q:(rem = 0) sm
+    q ..GetComDiv(rem, sm)
+]]></Implementation>
+</Method>
+
+<Method name="Deci2Fra">
+<Description>
+desc: 小数转分数
+w ##class(Util.NumberUtils).Deci2Fra(0.125)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>num</FormalSpec>
+<Implementation><![CDATA[
+    s nnum = $zabs(num)
+    q:(nnum '< 1)&&(nnum '[ ".") num
+    s ten = $l($p(num, ".", 2)) * 10
+    s num1 = num * ten
+    s num2 = ten
+    s com =  ..GetComDiv(num1, num2)
+    q (num1 / com) _ "/" _ (num2 / com)
+]]></Implementation>
+</Method>
+
+<Method name="ZeroPadding">
+<Description>
+desc: 不足N位补0
+w ##class(Util.NumberUtils).ZeroPadding(1234,9)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>target,num</FormalSpec>
+<Implementation><![CDATA[    q $tr($j(target, num), " ", "0")
+]]></Implementation>
+</Method>
+
+<Method name="ConvertMoneyFomat">
+<Description>
+desc：转换为钱格式
+w ##class(Util.NumberUtils).ConvertMoneyFomat(200000,2)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>num,zeroNum</FormalSpec>
+<Implementation><![CDATA[
+	s len = $l(num)
+	s suffixNum = len \ 4
+	s suffix = ##class(Util.StringUtils).Repeat(",999", suffixNum)
+	
+	s prefixNum = (len # 4) +1
+	s prefix = ##class(Util.StringUtils).Repeat("9", prefixNum)
+	s format = prefix _ suffix
+	
+	s zero = ##class(Util.StringUtils).Repeat("9", zeroNum)
+	
+	s format = prefix _ suffix _ "." _ zero
+	&sql(
+		SELECT 
+			TO_CHAR(:num, :format)
+		INTO 
+			:target
+	)
+	q target
+]]></Implementation>
+</Method>
+
+<Method name="ConvertMoneyFomat1">
+<Description>
+desc: 转换为钱格式
+w ##class(Util.NumberUtils).ConvertMoneyFomat1(200000,2)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>num,zeroNum</FormalSpec>
+<Implementation><![CDATA[	q $fn(num, ",", zeroNum)
+]]></Implementation>
+</Method>
+
+<Method name="Num2Rmb">
+<Description>
+desc: 数字转大写人民币
+w ##class(Util.NumberUtils).Num2Rmb(111987654321.123456789)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>num:%Integer</FormalSpec>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+	q:'$isvalidnum(num) $$$ERROR(5001, "不是数字")
+	s minusSign = ""      
+	if num < 0 {
+		s minusSign = "负"
+		s num = $zabs(num)
+	}
+	s num = $fn(num, "N", 2)
+	s num = +num
+	
+	#; 整数部分
+	s units = $lb("元","拾","佰","仟","万","拾","佰","仟","亿","拾","佰","仟","万")
+	s digitals = $lb("零","壹","贰","叁","肆","伍","陆","柒","捌","玖")
+	s target = ""
+	s int = $p(num, ".", 1) 
+	s decimal = $p(num, ".", 2) 
+	s int = $re(int)
+	s len = $l(int)
+	for i = 1 : 1 : len {
+		s pos = $e(int, i)
+		continue:(pos = 0)
+		s digital = $lg(digitals, pos + 1)
+		s unit = $lg(units, i)
+		s target =  digital _ unit _ target
+	}
+	s target = minusSign _ target
+	s:(decimal = "") target = target _ "整"
+	#; 小数部分
+	s decimalStr = ""
+	s decimalUnits = $lb("角","分")
+	for i = 1 : 1 : $l(decimal) {
+		s pos = $e(decimal, i)
+		continue:(pos = 0)
+		s digital = $lg(digitals, pos + 1)
+		s unit = $lg(decimalUnits, i)
+		s decimalStr =  digital _ unit _ decimalStr
+	}
+	s target = target _ decimalStr
+	q target
+]]></Implementation>
+</Method>
+</Class>
+</Export>

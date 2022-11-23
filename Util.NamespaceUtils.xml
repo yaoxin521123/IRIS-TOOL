@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2016.2 (Build 736U)" ts="2022-11-23 10:02:45">
+<Class name="Util.NamespaceUtils">
+<Super>%RegisteredObject</Super>
+<TimeChanged>66318,32656.799944</TimeChanged>
+<TimeCreated>66318,32559.609562</TimeCreated>
+
+<Method name="IsNamespaceExist">
+<Description>
+desc：判断命名空间是否存在
+w ##class(Util.NamespaceUtils).IsNamespaceExist("user")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>name</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[	q ##class(%SYS.Namespace).Exists(name)
+]]></Implementation>
+</Method>
+</Class>
+</Export>

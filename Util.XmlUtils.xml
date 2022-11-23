@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2016.2 (Build 736U)" ts="2022-11-23 10:03:36">
+<Class name="Util.XmlUtils">
+<Super>%RegisteredObject</Super>
+<TimeChanged>65893,83007.61642</TimeChanged>
+<TimeCreated>65893,83007.61642</TimeCreated>
+
+<Method name="CreateWriter">
+<Description>
+在给定wname的情况下，返回具有这些属性的编写器</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>wname</FormalSpec>
+<ReturnType>%XML.Writer</ReturnType>
+<Implementation><![CDATA[
+	set w=##class(%XML.Writer).%New()
+	set w.Indent=1
+	set w.IndentChars="   "
+	if wname="DefaultWriter" {
+		set w.Indent=0  ; set back to default
+	}
+	elseif wname="EncodedWriter" {
+		set w.Format="encoded"
+	}
+	elseif wname="EncodedWriterRefInline" {
+		set w.Format="encoded"
+		set w.ReferencesInline=1
+	}
+	elseif wname="AttQualWriter" {
+		set w.AttributeQualified=1
+	}
+	elseif wname="AttUnqualWriter" {
+		set w.AttributeQualified=0 ; default
+	}
+	elseif wname="ElQualWriter" {
+		set w.ElementQualified=1 ; default
+	}
+	elseif wname="ElUnqualWriter" {
+		set w.ElementQualified=0
+	}
+	elseif wname="ShallowWriter" {
+		set w.Shallow=1
+	}
+	elseif wname="SOAPWriter1.1" {
+		set w.Format="encoded"
+		set w.ReferencesInline=1
+	}
+	elseif wname="SOAPWriter1.2" {
+		set w.Format="encoded12"
+		set w.ReferencesInline=1
+	}
+	elseif wname="SummaryWriter" {
+		set w.Summary=1
+	}
+	elseif wname="WriterNoXmlDecl" {
+		set w.NoXMLDeclaration=1
+	}
+	elseif wname="WriterRefInline" {
+		set w.ReferencesInline=1
+	}
+	elseif wname="WriterRuntimeIgnoreNull" {
+		set w.RuntimeIgnoreNull=1
+	}
+	elseif wname="WriterSuppressXmlns" {
+		set w.SuppressXmlns=1
+	}
+	elseif wname="WriterUTF16" {
+		set w.Charset="UTF-16"
+	}
+	elseif wname="WriterWithDefNS" {
+		set w.DefaultNamespace="www.Def.org"
+	}
+	elseif wname="WriterWithDefNSSuppressXmlns" {
+		set w.DefaultNamespace="www.Def.org"
+		set w.SuppressXmlns=1
+	}
+	elseif wname="WriterWithDtdSettings" {
+		set w.DocType ="MyDocType"
+		set w.SystemID = "http://www.mysite.com/mydoc.dtd"
+		set w.PublicID = "-//W3C//DTD XHTML 1.0 Transitional//EN"
+		set w.InternalSubset = "" 
+	}
+	elseif wname="WriterXsiTypes" {
+		set w.OutputTypeAttribute=1
+	}
+	quit w
+]]></Implementation>
+</Method>
+</Class>
+</Export>

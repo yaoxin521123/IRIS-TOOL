@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2016.2 (Build 736U)" ts="2022-11-23 10:01:36">
+<Class name="Util.CompileUtil">
+<Super>%RegisteredObject</Super>
+<TimeChanged>66154,58908.382296</TimeChanged>
+<TimeCreated>66154,58807.08535</TimeCreated>
+
+<Method name="CompileClass">
+<Description>
+后台自动编译csp</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>clsName</FormalSpec>
+<Implementation><![CDATA[
+	s p = ##class(%Studio.Project).%New()
+	d p.AddItem("/imedical/web/csp/websys.csp", "csp")
+	d p.Compile("cu/checkuptodate = expandedonly")
+	q ""
+]]></Implementation>
+</Method>
+</Class>
+</Export>
